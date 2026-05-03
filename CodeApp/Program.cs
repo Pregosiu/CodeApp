@@ -15,7 +15,7 @@ builder.Services.AddOpenApi();
 var connectionString = builder.Configuration.GetConnectionString("connString") ??
     throw new InvalidOperationException("Conn string 'connString'" + " not found.");
 
-builder.Services.AddDbContext<DBContext>(options => 
+builder.Services.AddDbContext<AppDBContext>(options => 
     options.UseNpgsql(connectionString));
 
 var app = builder.Build();

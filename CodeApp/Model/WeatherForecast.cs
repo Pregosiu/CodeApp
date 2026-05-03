@@ -1,7 +1,13 @@
-namespace CodeApp
+using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+
+namespace CodeApp.Model
 {
     public class WeatherForecast
     {
+        [Key]
+        public int id { get; set; }
+
         public DateOnly Date { get; set; }
 
         public int TemperatureC { get; set; }
