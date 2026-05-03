@@ -22,16 +22,11 @@ namespace CodeApp.Controllers
         ];
 
         [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
+        public IEnumerable<WeatherForecastDTO> Get()
         {
-            var a = Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
-            return a;
+            var forecast = _dbContext.WeatherForecasts.Select(forecast => Converter.ToDTO(forecast)).ToList();
+            
+            return forecast;
         }
 
         [HttpPost(Name = "PostWeatherForecast")]
