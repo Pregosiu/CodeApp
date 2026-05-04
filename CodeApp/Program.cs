@@ -1,3 +1,5 @@
+using CodeApp.Data;
+using CodeApp.Mappings;
 using CodeApp.Services;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
@@ -9,8 +11,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 builder.Services.AddSwaggerGen();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
 
 var connectionString = builder.Configuration.GetConnectionString("connString") ??
     throw new InvalidOperationException("Conn string 'connString'" + " not found.");
@@ -18,12 +18,15 @@ var connectionString = builder.Configuration.GetConnectionString("connString") ?
 builder.Services.AddDbContext<AppDBContext>(options => 
     options.UseNpgsql(connectionString));
 
+builder.Services.AddAutoMapper(cfg => cfg.AddProfile<WeatherMappingProfile>());
+
+builder.Services.AddScoped<IWeatherService, WeatherService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
     app.UseSwagger();
     app.UseSwaggerUI();
 
