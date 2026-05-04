@@ -1,13 +1,7 @@
-using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
-
-namespace CodeApp.Model
+﻿namespace CodeApp.Models.DTO
 {
-    public class WeatherForecast
+    public class WeatherForecastDTO
     {
-        [Key]
-        public int id { get; set; }
-
         public DateOnly Date { get; set; }
 
         public int TemperatureC { get; set; }
@@ -15,5 +9,6 @@ namespace CodeApp.Model
         public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 
         public string? Summary { get; set; }
+
     }
 }

@@ -1,7 +1,8 @@
-using CodeApp.Model;
+using CodeApp.Models.DTO;
 using CodeApp.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Query.Internal;
 using System.Data;
 
 namespace CodeApp.Controllers
@@ -10,10 +11,11 @@ namespace CodeApp.Controllers
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
-        private readonly AppDBContext _dbContext;
-        public WeatherForecastController(AppDBContext dbContext)
+        private readonly IWeatherService _weatherService;
+
+        public WeatherForecastController(IWeatherService weatherService)
         {
-            _dbContext = dbContext;
+            _weatherService = weatherService;
         }
 
         private static readonly string[] Summaries =
@@ -22,28 +24,21 @@ namespace CodeApp.Controllers
         ];
 
         [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
-        {
-            var a = Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
-            return a;
+        public async Task<ActionResult<IEnumerable<WeatherForecastDTO>>> Get(){   
+
+            var forecasts = await _weatherService.GetAllForecastsAsync();
+            return Ok(forecasts);
         }
 
         [HttpPost(Name = "PostWeatherForecast")]
-        public IActionResult Post(WeatherForecastDTO forecast) { 
+        public async Task<IActionResult> Post(WeatherForecastDTO forecast) { 
             if (forecast == null)
             {
                 return BadRequest("Forecast data is required.");
             }
-            var entity = Converter.ToEntity(forecast);
-            _dbContext.Add(entity);
-            _dbContext.SaveChanges();
-            return Ok(forecast);
+            await _weatherService.CreateForecastAsync(forecast);
+
+            return Ok();
         }
     }
 }
