@@ -18,9 +18,9 @@ var connectionString = builder.Configuration.GetConnectionString("connString") ?
 builder.Services.AddDbContext<AppDBContext>(options => 
     options.UseNpgsql(connectionString));
 
-builder.Services.AddAutoMapper(cfg => cfg.AddProfile<WeatherMappingProfile>());
+builder.Services.AddAutoMapper(cfg => cfg.AddProfile<FoodProfile>());
 
-builder.Services.AddScoped<IWeatherService, WeatherService>();
+builder.Services.AddScoped<IFoodService, FoodService>();
 
 var app = builder.Build();
 
